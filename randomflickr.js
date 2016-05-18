@@ -1,22 +1,5 @@
-
-/*
-	licenses stuff from @cogdog
-*/
-var licenses = new Array( "", "BY-NC-SA", "BY-NC", "BY-NC-ND", "BY", "BY-SA", "BY-ND", "", "PD", "CC0", "PD" );
-
- function get_license_text( thelicense ) {
- 	switch( thelicense ) {
- 		case "7":
- 			return 'with no copyright restriction (Flickr Commons)';
- 			break;
- 		case "8":
- 			return 'as s United States Government Work ( PD )';
- 			break;
- 		default:
- 			return 'under a Creative Commons (' + licenses[thelicense] + ') license';
- 	}
- }
- 
+//seting up 2 images to load into, don't display until both loaded
+//could this be an array?
 var imagesloaded=0;
 var image1 = new Image();
 var image2 = new Image();
@@ -36,12 +19,17 @@ image2.onload = function(){
 };
 
 
+//what to d owhen the json arrives from flickr api
+//store in global photosObj
  var jsonFlickrApi =function(thejson){
    photosObj =thejson.photos.photo;
    randomBlend();
  
 }
 
+
+//get 2 random photos and info
+//load the images, global the info 
 var randomBlend =function(){
 	imagesloaded=0;
     var maxPhotos=photosObj.length;
@@ -80,7 +68,7 @@ var randomBlend =function(){
     image2.src=imagesrc1;
 }
 
-var combo=function(img1,img2,o1,o2,l1,l2){
+var combo=function(img1,img2){
     /*
     var img1 = document.getElementById('img1');
        var img2 = document.getElementById('img2');*/
@@ -133,3 +121,22 @@ function show(id) {
   function hide(id) {
     document.getElementById(id).style.visibility = "hidden";
   }
+
+  /*
+  	licenses stuff from @cogdog
+  */
+  var licenses = new Array( "", "BY-NC-SA", "BY-NC", "BY-NC-ND", "BY", "BY-SA", "BY-ND", "", "PD", "CC0", "PD" );
+
+   function get_license_text( thelicense ) {
+   	switch( thelicense ) {
+   		case "7":
+   			return 'with no copyright restriction (Flickr Commons)';
+   			break;
+   		case "8":
+   			return 'as s United States Government Work ( PD )';
+   			break;
+   		default:
+   			return 'under a Creative Commons (' + licenses[thelicense] + ') license';
+   	}
+   }
+ 
