@@ -1,0 +1,186 @@
+
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Blending random Flickr</title>
+  <meta name="description" content="Blending random Flickr">
+  <meta name="author" content="John Johnston">
+
+<style type="text/css" media="screen">
+body{text-align:center;background-color: #000;color:#E6E6E6;font-size:48px;}
+.info{font: normal normal normal 12px Arial, sans-serif;}
+a,a:visited{color:yellow;text-decoration:none;}
+a:hover{text-decoration:underline;}
+#ios{display:none;}
+</style>
+
+   
+</head>
+
+<body>
+<img id="loading" src="ajax-loader.gif">
+<p id="ios"> This does not work on iOS check the <a href="index_c.html">canvas version</a>.</p>
+ <canvas id="canvas"></canvas>
+ <p> <a id="download" class="info">Download as image</a></p>
+ <p id="licenses" class="info"></p>
+ <p>Just grabbing some random flickr photos and blending them...</p>
+ <p class="info">wejamecono, no error checking yet, refresh to fix problems. 
+<script type="text/javascript">
+ 
+ var licenses = new Array( "", "BY-NC-SA", "BY-NC", "BY-NC-ND", "BY", "BY-SA", "BY-ND", "", "PD", "CC0", "PD" );
+
+ function get_license_text( thelicense ) {
+ 	switch( thelicense ) {
+ 		case "7":
+ 			return 'with no copyright restriction (Flickr Commons)';
+ 			break;
+ 		case "8":
+ 			return 'as s United States Government Work ( PD )';
+ 			break;
+ 		default:
+ 			return 'under a Creative Commons (' + licenses[thelicense] + ') license';
+ 	}
+ }
+ 
+ 
+var imagesloaded=0;
+var image1 = new Image();
+var image2 = new Image();
+image1.onload = function(){
+   imagesloaded++;
+   if (imagesloaded==2){
+	   combo(image1,image2);
+	   imagesloaded=0;
+   }
+};
+image2.onload = function(){
+   imagesloaded++;
+   if (imagesloaded==2){
+	   combo(image1,image2);
+	   imagesloaded=0;
+   }
+};
+
+
+ var jsonFlickrApi =function(thejson){
+ console.log(thejson);
+   photosObj =thejson.photos.photo;
+   randomBlend();
+   
+   document.getElementById('loading').style.display="none";
+ 
+}
+
+var randomBlend =function(){
+	imagesloaded=0;
+    var maxPhotos=photosObj.length;
+   
+    var ran1 =Math.floor((Math.random() * maxPhotos) + 1);
+    var ran2 =Math.floor((Math.random() * maxPhotos) + 1);
+    var imagesrc=photosObj[ran1].url_c;
+    var imagesrc1=photosObj[ran2].url_c;
+	 owner1=photosObj[ran1].ownername;
+	 owner2=photosObj[ran2].ownername;
+	 license1=photosObj[ran1].license;
+	 license2=photosObj[ran2].license;
+	 owner1Id=photosObj[ran1].owner;
+	 owner2Id=photosObj[ran2].owner;
+	 photo1Id=photosObj[ran1].id;
+	 photo2Id=photosObj[ran2].id;
+	
+    //document.getElementById('main').innerHTML = "<img src='"+imagesrc+"' id='img1'><img src='"+imagesrc1+"' id='img2'>";
+   
+    
+   
+    image1.src="p.php?i="+imagesrc;
+     image2.src="p.php?i="+imagesrc1;
+}
+
+var combo=function(img1,img2,o1,o2,l1,l2){
+   /*
+    var img1 = document.getElementById('img1');
+       var img2 = document.getElementById('img2');*/
+   
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+	
+    var width = img1.width;
+    console.log(width);
+    var height = img1.height;
+    canvas.width = width;
+    canvas.height = height;
+	
+
+    var pixels = 4 * width * height;
+    context.drawImage(img1, 0, 0,width,height);
+    var image1 = context.getImageData(0, 0, width, height);
+    var imageData1 = image1.data;
+    context.drawImage(img2, 0, 0,width,height);
+    var image2 = context.getImageData(0, 0, width, height);
+    var imageData2 = image2.data;
+    while (pixels--) {
+        //imageData1[pixels] = imageData1[pixels] * Math.random() + imageData2[pixels] * Math.random();
+		imageData1[pixels] = imageData1[pixels] *0.5 + imageData2[pixels] * 0.5;
+    }
+    image1.data = imageData1;
+    context.putImageData(image1, 0, 0);
+	showCredits();
+	
+	setTimeout(randomBlend, 10000)
+}
+
+var showCredits=function(){
+	
+	var photolink1 = "<a href='https://flickr.com/photos/"+owner1Id+"/"+photo1Id+"'>view on flickr</a>";
+	var photolink2 = "<a href='https://flickr.com/photos/"+owner2Id+"/"+photo2Id+"'>view on flickr</a>";
+  
+	
+	var credits1 ="Photo by: "+owner1+" license: "+ get_license_text(license1);
+	var credits2 ="Photo by "+owner2+" license: "+ get_license_text(license2);
+	document.getElementById('licenses').innerHTML=credits1+" "+photolink1+"<br>"+ credits2+" "+photolink2;
+	
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+	context.font = "12px Arial";
+	context.fillStyle = "white";
+	context.fillText(credits1,10,canvas.height-25);
+	context.fillText(credits2,10,canvas.height-12);
+}
+
+
+/**
+ * This is the function that will take care of image extracting and
+ * setting proper filename for the download.
+ * IMPORTANT: Call it from within a onclick event.
+*/
+function downloadCanvas(link, canvasId, filename) {
+    link.href = document.getElementById(canvasId).toDataURL("image/jpeg");
+    link.download = filename;
+}
+
+/** 
+ * The event handler for the link's onclick event. We give THIS as a
+ * parameter (=the link element), ID of the canvas and a filename.
+*/
+document.getElementById('download').addEventListener('click', function() {
+    downloadCanvas(this, 'canvas', 'test.jpg');
+}, false);
+
+/*
+document.getElementById('canvas').addEventListener('click', function() {
+    downloadCanvas(this, 'canvas', 'test.jpg');
+}, false);*/
+
+
+   </script>
+   
+  <script src="https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=7177ae43badab8b5428ef2e2c7a66aac&license=7%2C8%2C2%2C4%2C5&sort=interestingness-desc&extras=url_c%2Clicense%2Cowner_name&per_page=500&format=json"></script>
+  
+  
+ 
+</body>
+</html>

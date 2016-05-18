@@ -1,0 +1,99 @@
+
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Blending random Flickr</title>
+  <meta name="description" content="Blending random Flickr">
+  <meta name="author" content="John Johnston">
+
+<style type="text/css" media="screen">
+body{text-align:center;background-color: #000;color:#E6E6E6;font-size:48px;}
+</style>
+
+   
+</head>
+
+<body>
+
+ <canvas id="canvas"></canvas>
+ <p>Just grabbing some random flickr photos and blending them...</p>
+<script type="text/javascript">
+var imagesloaded=0;
+var image1 = new Image();
+var image2 = new Image();
+image1.onload = function(){
+   imagesloaded++;
+   if (imagesloaded==2){
+	   combo(image1,image2);
+	   imagesloaded=0;
+   }
+};
+image2.onload = function(){
+   imagesloaded++;
+   if (imagesloaded==2){
+	   combo(image1,image2);
+	   imagesloaded=0;
+   }
+};
+
+
+ var jsonFlickrApi =function(thejson){
+ console.log(thejson);
+   photosObj =thejson.photos.photo;
+   randomBlend();
+ 
+}
+
+var randomBlend =function(){
+	imagesloaded=0;
+    var maxPhotos=photosObj.length;
+   
+    var ran1 =Math.floor((Math.random() * maxPhotos) + 1);
+    var ran2 =Math.floor((Math.random() * maxPhotos) + 1);
+    var imagesrc=photosObj[ran1].url_c;
+    var imagesrc1=photosObj[ran2].url_c;
+    
+    
+	//need to proxy the flickr photos to avoid cross origin errors:(
+    image1.src="p.php?i="+imagesrc;
+     image2.src="p.php?i="+imagesrc1;
+ }
+
+var combo=function(img1,img2){
+ 
+   
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+	
+    var width = img1.width;
+    console.log(width);
+    var height = img1.height;
+    canvas.width = width;
+    canvas.height = height;
+	
+
+    var pixels = 4 * width * height;
+    context.drawImage(img1, 0, 0,width,height);
+    var image1 = context.getImageData(0, 0, width, height);
+    var imageData1 = image1.data;
+    context.drawImage(img2, 0, 0,width,height);
+    var image2 = context.getImageData(0, 0, width, height);
+    var imageData2 = image2.data;
+    while (pixels--) {
+        //imageData1[pixels] = imageData1[pixels] * Math.random() + imageData2[pixels] * Math.random();
+		imageData1[pixels] = imageData1[pixels] *0.5 + imageData2[pixels] * 0.5;
+    }
+    image1.data = imageData1;
+    context.putImageData(image1, 0, 0);
+	
+	setTimeout(randomBlend, 10000)
+}
+   </script>
+   
+  <script src="https://api.flickr.com/services/rest/?method=flickr.interestingness.getList&api_key=07665a5f1f17101c9b5b03042e3589ea&extras=url_c&per_page=500&format=json"></script>
+</body>
+</html>

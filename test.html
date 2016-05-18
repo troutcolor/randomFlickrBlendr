@@ -1,0 +1,65 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Title</title>
+  <meta name="description" content="About this">
+  <meta name="author" content="John Johnston">
+  <style type="text/css" media="screen">
+  	
+
+#pic {
+  background:
+    url(https://c2.staticflickr.com/6/5761/22745534573_697debc4e0_c.jpg),
+    url(https://c2.staticflickr.com/2/1539/26684997846_1c5fef566a_c.jpg);
+	 background-blend-mode: multiply;
+	 width:800px;height:600px;
+}
+   </style>
+   
+   <script type="text/javascript">
+   var swapmode=function(){
+	   var e = document.getElementById("mode");
+	   var mode = e.options[e.selectedIndex].value;
+	   
+	   document.getElementById('pic').style.backgroundBlendMode=mode;
+	
+   }
+   
+   var swapimage=function(){
+   	document.getElementById('pic').style.background="url(https://c2.staticflickr.com/2/1653/26309437930_4c646331c5_c.jpg),url(https://c2.staticflickr.com/2/1498/26325742576_087e6c216d_c.jpg)";
+   }
+   </script>
+   
+</head>
+
+<body>
+	
+	<select name="mode" id="mode"  onchange="swapmode();return true;" size="1">
+		<option value="multiply" selected>multiply</option>
+		<option value="screen">screen</option>
+		<option value="overlay">overlay</option>
+		<option value="darken">darken</option>
+		<option value="lighten">lighten</option>
+		<option value="color-dodge">color-dodge</option>
+		<option value="color-burn">color-burn</option>
+		<option value="hard-light">hard-light</option>
+		<option value="soft-light">soft-light</option>
+		<option value="difference">difference</option>
+		<option value="exclusion">exclusion</option>
+		<option value="hue">hue</option>
+		<option value="saturation">saturation</option>
+		<option value="color">color</option>
+		<option value="luminosity">luminosity</option>
+		
+	</select>
+
+ 
+
+<div id="pic">
+	
+</div>
+ </body>
+</html>
