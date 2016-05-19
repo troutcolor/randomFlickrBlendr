@@ -27,7 +27,8 @@ image2.onload = function(){
  
 }
 
-var myRandomImage=function(){
+//myRandomImageNumber ensures that random selection from photos has the correct sized image
+var myRandomImageNumber=function(){
 	var maxPhotos=photosObj.length;
 	var returnnumber=false;
 	
@@ -35,10 +36,8 @@ var myRandomImage=function(){
 		try {
 			var ran =Math.floor(( Math.random() * maxPhotos ) );
 			var i=photosObj[ran1].url_c;
-		} catch ( err ) {
-			 		 
-	}
-	
+		} catch ( err ) {			 		 
+	}	
 	return ran;
 }
 }
