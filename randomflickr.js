@@ -19,7 +19,7 @@ image2.onload = function(){
 };
 
 
-//what to d owhen the json arrives from flickr api
+//what to do when the json arrives from flickr api
 //store in global photosObj
  var jsonFlickrApi =function(thejson){
    photosObj =thejson.photos.photo;
@@ -27,9 +27,24 @@ image2.onload = function(){
  
 }
 
+var myRandomImage=function(){
+	var maxPhotos=photosObj.length;
+	var returnnumber=false;
+	
+	while (  !returnnumber ) {
+		try {
+			var ran =Math.floor(( Math.random() * maxPhotos ) );
+			var i=photosObj[ran1].url_c;
+		} catch ( err ) {
+			 		 
+	}
+	
+	return ran;
+}
+}
 
 //get 2 random photos and info
-//load the images, global the info 
+//load the images, global the info proably shoud just save the random numbers?
 var randomBlend =function(){
 	imagesloaded=0;
     var maxPhotos=photosObj.length;
