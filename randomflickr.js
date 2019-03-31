@@ -77,8 +77,13 @@ var showCredits = function() {
 	owner1 = photosObj[currentPhotos[0]].ownername;
 	owner2 = photosObj[currentPhotos[1]].ownername;
 
-	var photolink1 = "<a target='new' href='https://flickr.com/photos/" + owner1Id + "/" + photo1Id + "'>view on flickr</a>";
-	var photolink2 = "<a target='new' href='https://flickr.com/photos/" + owner2Id + "/" + photo2Id + "'>view on flickr</a>";
+	//var photolink1 = "<a target='new' href='https://flickr.com/photos/" + owner1Id + "/" + photo1Id + "'>view on flickr</a>";
+//	var photolink2 = "<a target='new' href='https://flickr.com/photos/" + owner2Id + "/" + photo2Id + "'>view on flickr</a>";
+	
+	shorturl1 = "https://flic.kr/p/" + base58.encode(parseInt(photo1Id));
+	shorturl2 = "https://flic.kr/p/" + base58.encode(parseInt(photo2Id));
+	var photolink1 = "<a target='new' href='"+shorturl1+ "'>"+ shorturl1+ "</a>";
+	var photolink2 = "<a target='new' href='"+shorturl2+ "'>"+ shorturl2+ "</a>";
 
 	var credits1 = "Photo by: " + owner1 + " : " + get_license_text( license1 );
 	var credits2 = "Photo by " + owner2 + " : " + get_license_text( license2 );
@@ -143,4 +148,34 @@ function get_license_text(thelicense) {
 	}
 }
 
- 
+var base58 = (function(alpha) {
+	var alphabet = alpha || '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ',
+		base = alphabet.length;
+	return {
+		encode: function(enc) {
+			if (typeof enc !== 'number' || enc !== parseInt(enc))
+				throw '"encode" only accepts integers.';
+			var encoded = '';
+			while (enc) {
+				var remainder = enc % base;
+				enc = Math.floor(enc / base);
+				encoded = alphabet[remainder].toString() + encoded;
+			}
+			return encoded;
+		},
+		decode: function(dec) {
+			if (typeof dec !== 'string')
+				throw '"decode" only accepts strings.';
+			var decoded = 0;
+			while (dec) {
+				var alphabetPosition = alphabet.indexOf(dec[0]);
+				if (alphabetPosition < 0)
+					throw '"decode" can\'t find "' + dec[0] + '" in the alphabet: "' + alphabet + '"';
+				var powerOf = dec.length - 1;
+				decoded += alphabetPosition * (Math.pow(base, powerOf));
+				dec = dec.substring(1);
+			}
+			return decoded;
+		}
+	};
+})();
