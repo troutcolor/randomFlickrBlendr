@@ -1,5 +1,6 @@
 //seting up 2 images to load into, don't display until both loaded
 //could this be an array?
+var pauseshow=false;
 var imagesloaded = 0;
 var image1 = new Image();
 var image2 = new Image();
@@ -45,6 +46,7 @@ var myRandomImageNumber = function() {
 //get 2 random photos and info
 //load the images, global the info proably shoud just save the random numbers?
 var randomBlend = function() {
+	if (pauseshow){return "";}
 	imagesloaded = 0;
 	var maxPhotos = photosObj.length;
 	
@@ -107,6 +109,12 @@ document.getElementById('info').onclick = function() {
 }
 
 
+var checkpause=function(){
+	
+	var p= document.getElementById("pauseshow");
+	pauseshow=(p.checked);
+	randomBlend();
+}
 
 
 function show(id) {
@@ -134,3 +142,5 @@ function get_license_text(thelicense) {
 			return 'under a Creative Commons (' + licenses[thelicense] + ') license';
 	}
 }
+
+ 
