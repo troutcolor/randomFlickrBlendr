@@ -1,4 +1,9 @@
-//seting up 2 images to load into, don't display until both loaded
+var ua = window.navigator.userAgent;
+var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
+var webkit = !!ua.match(/WebKit/i);
+var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
+	
+	//seting up 2 images to load into, don't display until both loaded
 //could this be an array?
 var pauseshow=false;
 var imagesloaded = 0;
@@ -102,7 +107,8 @@ document.getElementById( 'controlwrap' ).onmouseover = function() {
 	show('controls')
 };
 document.getElementById( 'controlwrap' ).onmouseout = function() {
-	hide('controls')
+	hide('controls');
+	
 };
 
 document.getElementById('info').onclick = function() {
@@ -119,6 +125,13 @@ var checkpause=function(){
 	var p= document.getElementById("pauseshow");
 	pauseshow=(p.checked);
 	randomBlend();
+	if (pauseshow){
+		//show('embed');
+		document.getElementById('embed').value=embedcode();	
+	}else{
+		//hide('embed');
+	}
+	
 }
 
 
@@ -179,3 +192,59 @@ var base58 = (function(alpha) {
 		}
 	};
 })();
+
+
+
+
+var embedcode=function(){
+	var thelicences=document.getElementById('licenses').innerHTML;
+	var backgroundblendmode= window.getComputedStyle(document.querySelector('#pic')).backgroundBlendMode;
+	var backgroundimage=window.getComputedStyle(document.querySelector('#pic')).backgroundImage;
+	var htmlfragment="<div style='background-position: center;width:800px;height:600px;margin:auto;background-size:cover;background-image:"+backgroundimage+";background-blend-mode:"+backgroundblendmode+";'></div><p>"+thelicences+"</p>";
+
+ 
+	return htmlfragment;
+	
+ 
+	
+}
+
+
+function myCopyURL() {
+			document.getElementById('embed').value=embedcode();	
+	show('embed');
+	var copyText = document.getElementById("embed");
+	
+	if (!iOSSafari) {
+		copyText.select();
+		document.execCommand("copy");
+
+	} else {
+		iosCopyToClipboard(copyText);
+	}
+	copyText.blur();
+	hide('embed');
+}
+
+
+function iosCopyToClipboard(el) {
+	var oldContentEditable = el.contentEditable,
+		oldReadOnly = el.readOnly,
+		range = document.createRange();
+
+	el.contentEditable = true;
+	el.readOnly = false;
+	range.selectNodeContents(el);
+
+	var s = window.getSelection();
+	s.removeAllRanges();
+	s.addRange(range);
+
+	el.setSelectionRange(0, 999999); // A big number, to cover anything that could be inside the element.
+
+	el.contentEditable = oldContentEditable;
+	el.readOnly = oldReadOnly;
+
+	document.execCommand('copy');
+}
+
